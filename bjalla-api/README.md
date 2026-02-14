@@ -1,3 +1,15 @@
-# API Memory Module
+# API Service
 
-This module contains the PocketBase API which is used as the persitant and organized memory management, including V-Tuber thoughts and training data.
+This module contains the Bjalla backend which runs on PocketBase.
+
+### Starting
+
+```bash
+go run src/main.go serve
+```
+
+### Testing
+
+```bash
+go test ./tests
+```
