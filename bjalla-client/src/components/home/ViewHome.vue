@@ -1,10 +1,17 @@
 <template>
-    <div class="view-home">Logged in as {{ pb.authStore.model?.email }}</div>
+    <div class="view-home">
+        <ViewSidebar />
+        <div class="view-home-content">
+            Logged in as {{ pb.authStore.model?.email }}
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
-import pb from "../service/pocketbase";
+import pb from "../../service/pocketbase";
 import { useRouter } from "vue-router";
+
+import ViewSidebar from "./ViewSidebar.vue";
 
 /**
  * Router instance to redirect unauthenticated users to the login page.
@@ -25,5 +32,12 @@ if (!pb.authStore.isValid) {
     flex: 1;
     justify-content: center;
     align-items: center;
+
+    .view-home-content {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+    }
 }
 </style>

@@ -7,11 +7,13 @@
 <script setup lang="ts">
 import NotFound from "./NotFound.vue";
 import ViewAuth from "./ViewAuth.vue";
-import ViewHome from "./ViewHome.vue";
+import ViewHome from "./home/ViewHome.vue";
 
 defineOptions({
     routes: [
         { path: "/", component: ViewHome },
+        { path: "/:guild", component: ViewHome },
+        { path: "/:guild/:channel", component: ViewHome },
         { path: "/login", component: ViewAuth },
         { path: "/:pathMatch(.*)*", component: NotFound },
     ],
