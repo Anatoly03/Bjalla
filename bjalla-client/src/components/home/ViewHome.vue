@@ -2,7 +2,7 @@
     <div class="view-home">
         <ViewSidebar />
         <div class="view-home-content">
-            <div style="flex:1">Chat here</div>
+            <ViewChannel />
             <ViewMemberList :key="$route.params.guild" />
         </div>
     </div>
@@ -14,6 +14,7 @@ import { useRouter } from "vue-router";
 
 import ViewSidebar from "./ViewSidebar.vue";
 import ViewMemberList from "./ViewMemberList.vue";
+import ViewChannel from "./ViewChannel.vue";
 
 /**
  * Router instance to redirect unauthenticated users to the login page.
