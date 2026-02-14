@@ -1,6 +1,8 @@
 import { createApp } from "vue";
 import { createWebHistory, createRouter } from "vue-router";
 
+import pb from './service/pocketbase';
+
 import App from "./components/App.vue";
 import "./assets/style.scss";
 
@@ -13,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 const router = createRouter({
     history: createWebHistory(),
     routes: App.routes,
-});
+})
 
 library.add(fab, far, fas);
 
