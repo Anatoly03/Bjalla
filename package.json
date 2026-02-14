@@ -1,0 +1,6 @@
+{
+    "workspaces": ["bjalla-client"],
+    "scripts": {
+        "serve": "npm run dev --workspace bjalla-client"
+    }
+}
