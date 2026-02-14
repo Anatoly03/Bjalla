@@ -1,13 +1,15 @@
 <template>
     <div class="view-auth card">
         <div class="card-header">Authenticate</div>
-        <form class="card-body" @submit.prevent="authWithPassword">
-            <div class="password-region" v-if="authMethods.password.enabled">
+        <div class="card-body">
+            <!-- Password Authentication Region -->
+            <form class="password-region" v-if="authMethods.password.enabled" @submit.prevent="authWithPassword">
                 <input id="username-input" type="text" v-model="username" :placeholder="usernamePlaceholder" autocomplete="username email" />
                 <input name="password" type="password" v-model="password" placeholder="password" autocomplete="current-password" />
                 <input type="submit" value="Login" />
-            </div>
+            </form>
 
+            <!-- OAuth2 Authentication Region -->
             <div class="oauth-region" v-if="authMethods.oauth2.providers.length > 0">
                 <div class="oauth-header" v-if="authMethods.password.enabled">Or login with</div>
                 <div class="oauth-buttons">
@@ -17,8 +19,9 @@
                 </div>
             </div>
 
+            <!-- Error Delivery Region -->
             <div v-if="errorReason" class="error">{{ errorReason }}</div>
-        </form>
+        </div>
     </div>
 </template>
 

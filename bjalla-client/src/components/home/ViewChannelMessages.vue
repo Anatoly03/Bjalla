@@ -11,7 +11,7 @@
 import pb from "../../service/pocketbase";
 import { onBeforeUnmount, onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
-import { RecordModel, RecordSubscription } from "pocketbase";
+import { RecordModel, RecordSubscription, UnsubscribeFunc } from "pocketbase";
 
 /**
  * Route instance to get the current channel from the URL.
@@ -22,6 +22,11 @@ const route = useRoute();
  * Messages of the current channel.
  */
 const messages = ref<any[]>([]);
+
+/**
+ * Messages of the current channel.
+ */
+const unsubscribeFunc = ref<UnsubscribeFunc>(async () => {});
 
 /**
  * Handle real-time message events for the current channel.
@@ -61,14 +66,14 @@ onMounted(async () => {
     messages.value = resultList.items;
 
     // Listen for real-time updates to messages in the current channel.
-    pb.collection("messages").subscribe("*", receiveMessage, {
+    unsubscribeFunc.value = await pb.collection("messages").subscribe("*", receiveMessage, {
         expand: "author", // expand author on real-time events as well
     });
 });
 
 onBeforeUnmount(() => {
     // Unsubscribe from real-time updates when the component is unmounted.
-    pb.collection("messages").unsubscribe("*");
+    unsubscribeFunc.value();
 });
 </script>
 

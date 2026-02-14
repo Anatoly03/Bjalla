@@ -1,6 +1,6 @@
 <template>
     <div class="view-members">
-        <span :to="`/${row.expand.user.id}`" v-for="row in members" :key="row.id" class="view-member-item">
+        <span v-for="row in members" :key="row.id" class="view-member-item">
             {{ row.expand.user.name }}
         </span>
     </div>

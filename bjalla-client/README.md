@@ -1,3 +1,3 @@
-# Dashboard Module
+# Bjalla Client
 
-This module contains the client, an admin dashboard for debugging the AI components.
+This module contains the Bjalla frontend.
