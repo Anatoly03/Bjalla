@@ -2,7 +2,8 @@
     <div class="view-home">
         <ViewSidebar />
         <div class="view-home-content">
-            Logged in as {{ pb.authStore.model?.email }}
+            <div style="flex:1">Chat here</div>
+            <ViewMemberList :key="$route.params.guild" />
         </div>
     </div>
 </template>
@@ -12,6 +13,7 @@ import pb from "../../service/pocketbase";
 import { useRouter } from "vue-router";
 
 import ViewSidebar from "./ViewSidebar.vue";
+import ViewMemberList from "./ViewMemberList.vue";
 
 /**
  * Router instance to redirect unauthenticated users to the login page.
@@ -35,9 +37,11 @@ if (!pb.authStore.isValid) {
 
     .view-home-content {
         display: flex;
+        flex-direction: row;
         flex: 1;
         justify-content: center;
         align-items: center;
+        height: 100%;
     }
 }
 </style>

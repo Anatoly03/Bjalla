@@ -26,6 +26,8 @@ const guilds = ref<any[]>([]);
  */
 onMounted(async () => {
     const resultList = await pb.collection('guild_members').getList(1, 50, {
+        requestKey: 'guilds', // cache results
+        filter: `user="${pb.authStore.record?.id}"`,
         expand: 'guild',
     });
 

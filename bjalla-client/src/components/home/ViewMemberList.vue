@@ -1,8 +1,8 @@
 <template>
-    <div class="view-channels">
-        <router-link :to="`/${route.params.guild}/${row.expand.channel.id}`" v-for="row in channels" :key="row.id" class="channel-item" :class="{ active: route.params.channel === row.expand.channel.id }">
-            {{ row.expand.channel.name }}
-        </router-link>
+    <div class="view-members">
+        <span :to="`/${row.expand.user.id}`" v-for="row in members" :key="row.id" class="view-member-item">
+            {{ row.expand.user.name }}
+        </span>
     </div>
 </template>
 
@@ -17,36 +17,44 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 
 /**
- * Channels of the current guild.
+ * Members of the current guild.
  */
-const channels = ref<any[]>([]);
+const members = ref<any[]>([]);
 
+/**
+ * Fetch the members of the current guild on component mount.
+ */
 onMounted(async () => {
-    if (!route.params.guild) return;
-
-    const resultList = await pb.collection("guild_channels").getList(1, 50, {
-        requestKey: 'channels-' + route.params.guild, // cache results per guild
-        expand: "channel",
+    const resultList = await pb.collection('guild_members').getList(1, 50, {
+        requestKey: 'members-' + route.params.guild, // cache results per guild
         filter: `guild="${route.params.guild}"`,
+        expand: 'user',
     });
 
     console.log(resultList);
 
-    channels.value = resultList.items;
+    members.value = resultList.items;
 });
 </script>
 
 <style lang="scss" scoped>
 @use "../../assets/theme.scss";
 
-.view-channels {
+.view-members {
     display: flex;
-    flex: 1;
     flex-direction: column;
     padding: 0.5em;
     gap: 0.25rem;
 
-    .channel-item {
+    padding-right: 0.5em;
+    border-left: 1px solid black;
+    box-sizing: border-box;
+    gap: 0.5rem;
+
+    height: 100%;
+    width: 240px;
+
+    .view-member-item {
         display: flex;
         align-items: center;
         padding: 0.5rem;
