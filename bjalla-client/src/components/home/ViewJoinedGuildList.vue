@@ -9,13 +9,20 @@
                 />
             <span v-else class="guild-capital">{{ row.expand.guild.name.charAt(0).toUpperCase() }}</span>
         </router-link>
+        <div @click="openGuildProposal" class="view-guilds-item view-guilds-create">
+            <font-awesome-icon icon="fa-solid fa-circle-plus" />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
 import pb from "../../service/pocketbase";
 import { onMounted, ref } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+import { useModalRoute } from "@vmrh/core";
+
+const router = useRouter();
+const { openModal } = useModalRoute();
 
 /**
  * Route instance to get the current guild and channel from the URL.
@@ -26,6 +33,17 @@ const route = useRoute();
  * Guilds the user is a member of.
  */
 const guilds = ref<any[]>([]);
+
+/**
+ * Opens the guild proposal modal.
+ */
+async function openGuildProposal() {
+    const currentPath = router.currentRoute.value.fullPath;
+
+    await openModal("CreateGuild");
+    // hotfix: keep the visible URL unchanged while modal is open.
+    // setTimeout(() => window.history.replaceState(window.history.state, "", currentPath), 0);
+}
 
 /**
  * Fetch the guilds the user is a member of on component mount.
@@ -85,6 +103,10 @@ onMounted(async () => {
                 object-fit: cover;
             }
         }
+    }
+
+    .view-guilds-create {
+        border: 1px solid #0a5;
     }
 }
 </style>

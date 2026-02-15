@@ -12,6 +12,7 @@ import ModalProfileSettingsTheme from "./settings/ModalProfileSettingsTheme.vue"
 import NotFound from "./NotFound.vue";
 import ViewAuth from "./ViewAuth.vue";
 import ViewHome from "./home/ViewHome.vue";
+import ModalCreateGuild from "./create-guild/ModalCreateGuild.vue";
 
 defineOptions({
     routes: [
@@ -31,6 +32,12 @@ defineOptions({
                 { name: "ProfileSettingsGeneral", path: "", component: ModalProfileSettingsGeneral },
                 { name: "ProfileSettingsTheme", path: "theme", component: ModalProfileSettingsTheme },
             ],
+        },
+        {
+            path: "create-guild",
+            name: "CreateGuild",
+            component: ModalCreateGuild,
+            meta: { modal: true, direct: false },
         },
     ]
 });

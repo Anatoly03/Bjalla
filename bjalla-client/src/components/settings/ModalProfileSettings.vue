@@ -1,5 +1,5 @@
 <template>
-    <div v-if="modelValue" class="modal-background" @click.self="closeModal">
+    <div v-if="isActive" class="modal-background" @click.self="closeModal">
         <div class="modal modal-profile-settings">
             <div class="modal-sidebar">
                 <a @click="navigateTo('ProfileSettingsGeneral')" class="modal-sidebar-item">General</a>
@@ -13,12 +13,12 @@
 </template>
 
 <script setup lang="ts">
-import { ModalRouterView, useCurrentModal } from "@vmrh/core";
+import { ModalRouterView, useModal } from "@vmrh/core";
 import { useRoute, useRouter } from "vue-router";
 import ModalProfileSettingsGeneral from "./ModalProfileSettingsGeneral.vue";
 import ModalProfileSettingsTheme from "./ModalProfileSettingsTheme.vue";
 
-const { close, modelValue } = useCurrentModal();
+const { close, isActive } = useModal("ProfileSettings");
 const router = useRouter();
 const route = useRoute();
 
