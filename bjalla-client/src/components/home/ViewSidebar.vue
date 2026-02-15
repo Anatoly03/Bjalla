@@ -34,7 +34,7 @@ import ViewJoinedGuildList from "./ViewJoinedGuildList.vue";
 
         .separator {
             width: 1px;
-            background: black;
+            background: #ccc;
             height: calc(100% - 1rem);
         }
     }

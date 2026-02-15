@@ -91,7 +91,7 @@ onBeforeUnmount(() => {
         padding: 0.2em 0.5em;
 
         &:hover {
-            background: #eee;
+            background: var(--theme-bg-1, #e0c9b7);
         }
     }
 }

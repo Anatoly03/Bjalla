@@ -7,6 +7,8 @@
 
 <script setup lang="ts">
 import ModalProfileSettings from "./settings/ModalProfileSettings.vue";
+import ModalProfileSettingsGeneral from "./settings/ModalProfileSettingsGeneral.vue";
+import ModalProfileSettingsTheme from "./settings/ModalProfileSettingsTheme.vue";
 import NotFound from "./NotFound.vue";
 import ViewAuth from "./ViewAuth.vue";
 import ViewHome from "./home/ViewHome.vue";
@@ -25,16 +27,27 @@ defineOptions({
             name: "ProfileSettings",
             component: ModalProfileSettings,
             meta: { modal: true, direct: false },
+            children: [
+                { name: "ProfileSettingsGeneral", path: "", component: ModalProfileSettingsGeneral },
+                { name: "ProfileSettingsTheme", path: "theme", component: ModalProfileSettingsTheme },
+            ],
         },
     ]
 });
 </script>
 
 <style lang="scss" scoped>
+@use "../assets/color.scss";
+
 .app-body {
     display: flex;
     flex-direction: row;
     width: 100%;
     height: 100%;
+
+    color: var(--theme-text, #1a1a1a);
+    background: var(--theme-bg, #f2e6d6);
+
+    transition: background 160ms ease, color 160ms ease;
 }
 </style>
