@@ -1,26 +1,26 @@
 <template>
     <div v-if="modelValue" class="modal-background" @click.self="closeModal">
         <div class="modal modal-profile-settings">
-            <h2>{{ pb.authStore.record!.name }} <small>({{ pb.authStore.record!.email }})</small></h2>
-            <div class="row">
-                <input type="text" v-model="newName">
-                <button @click="updateName">Update Name</button>
+            <div class="modal-sidebar">
+                <a @click="navigateTo('ProfileSettingsGeneral')" class="modal-sidebar-item">General</a>
+                <a @click="navigateTo('ProfileSettingsTheme')" class="modal-sidebar-item">Theme</a>
+            </div>
+            <div class="modal-content">
+                <ModalRouterView />
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import pb from "../../service/pocketbase";
-import { useCurrentModal } from "@vmrh/core";
-import { ref } from "vue";
+import { ModalRouterView, useCurrentModal } from "@vmrh/core";
+import { useRoute, useRouter } from "vue-router";
+import ModalProfileSettingsGeneral from "./ModalProfileSettingsGeneral.vue";
+import ModalProfileSettingsTheme from "./ModalProfileSettingsTheme.vue";
 
 const { close, modelValue } = useCurrentModal();
-
-/**
- * Fields for profile rename functionality.
- */
-const newName = ref(pb.authStore.record!.name);
+const router = useRouter();
+const route = useRoute();
 
 /**
  * Closes the modal when the background is clicked or when the update
@@ -33,17 +33,28 @@ function closeModal() {
 /**
  * Updates the user's name in PocketBase and closes the modal on success.
  */
-async function updateName() {
+async function navigateTo(name: string) {
     try {
-        await pb.collection("users").update(pb.authStore.record!.id, {
-            name: newName.value,
+        await router.push({
+            name,
+            params: route.params,
+            query: route.query,
+            hash: route.hash,
         });
-        pb.authStore.record!.name = newName.value;
-        closeModal();
     } catch (error) {
-        console.error("Failed to update name:", error);
+        console.error("Navigation error:", error);
     }
 }
+
+/**
+ * Expose child routes for global modal registration.
+ */
+defineOptions({
+    routes: [
+        { name: "ProfileSettingsGeneral", path: "", component: ModalProfileSettingsGeneral },
+        { name: "ProfileSettingsTheme", path: "theme", component: ModalProfileSettingsTheme },
+    ],
+});
 </script>
 
 <style lang="scss" scoped>
@@ -62,6 +73,9 @@ async function updateName() {
 }
 
 .modal {
+    display: flex;
+    flex-direction: row;
+
     position: absolute;
     margin: auto;
     width: 80%;
@@ -73,29 +87,32 @@ async function updateName() {
     padding: 1rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 
-    .row {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
+    .modal-content {
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+    }
+}
 
-        input {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
+.modal-sidebar {
+    width: 200px;
+    border-right: 1px solid #ccc;
+    padding: 1rem;
+
+    .modal-sidebar-item {
+        display: block;
+        padding: 0.5rem;
+        color: #333;
+        text-decoration: none;
+        cursor: pointer;
+
+        &.active {
+            background-color: #eee;
+            font-weight: bold;
         }
 
-        button {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 0.25rem;
-            background-color: #0a3;
-            color: white;
-            cursor: pointer;
-
-            &:hover {
-                background-color: #0056b3;
-            }
+        &:hover {
+            background-color: #f5f5f5;
         }
     }
 }
