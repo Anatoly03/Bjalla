@@ -1,7 +1,7 @@
 <template>
     <div class="view-channel-messages">
         <div v-for="message in messages" :key="message.id" class="message">
-            <strong>{{ message.expand.author.name }}</strong>
+            <strong>{{ message.expand.author?.name ?? '???' }}</strong>
             <span>:</span>
             <span class="fill">{{ message.content }}</span>
             <button v-if="canDeleteMessages || message.expand.author.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>

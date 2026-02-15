@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bjalla-api/src/bjalla-bot"
+
 	"log"
 	"os"
 	"strings"
@@ -8,6 +10,8 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/plugins/migratecmd"
+
+	_ "bjalla-api/migrations"
 )
 
 func main() {
@@ -22,6 +26,9 @@ func main() {
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
 		Automigrate: isAutoMigrate,
 	})
+
+	// Register Bjalla BOT user.
+	app.OnRecordCreate("messages").BindFunc(bjalla_bot.HandleMessage)
 
 	if err := app.Start(); err != nil {
 		log.Fatal(err)
