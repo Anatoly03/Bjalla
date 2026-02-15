@@ -9,6 +9,11 @@
                 <div class="profile-name">
                     {{ user?.name ?? "Unknown User" }}
                 </div>
+                <div class="profile-roles">
+                    <span v-for="role in roles" :key="role.id" class="profile-role" :style="{ backgroundColor: role.color ? `#${role.color}` : '#888' }">
+                        {{ role.name }}
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -36,6 +41,15 @@ const props = defineProps<{
  * User Information
  */
 const user = ref<any>(null);
+
+/**
+ * User Roles
+ */
+const roles = ref<any[]>([]);
+
+/**
+ * Computed URL for the user's avatar, or an empty string if no avatar is set.
+ */
 const avatarUrl = computed(() => {
     if (!user.value?.avatar) {
         return "";
@@ -106,6 +120,21 @@ watch(
         } catch (error) {
             console.error("Failed to fetch user data:", error);
             user.value = null;
+        }
+
+        try {
+            const roleResponse = await pb.collection("guild_members").getFirstListItem(
+                `guild="${props.guild_id}" && user="${userId}"`,
+                {
+                    expand: "roles",
+                    requestKey: `user-roles-${props.guild_id}-${userId}`,
+                },
+            )
+
+            roles.value = roleResponse.expand?.roles || [];
+        } catch (err) {
+            console.error("Failed to fetch user roles:", err);
+            roles.value = [];
         }
     },
     { immediate: true },
@@ -191,6 +220,22 @@ watch(
         font-size: 1.25rem;
         font-weight: bold;
         color: var(--theme-text, #1a1a1a);
+    }
+
+    .profile-roles {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 0.5rem;
+
+        .profile-role {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            margin: 0.25rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            color: #fff;
+        }
     }
 }
 </style>
