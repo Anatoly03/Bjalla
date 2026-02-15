@@ -1,9 +1,12 @@
 <template>
     <div v-if="isActive" class="view-member-profile-modal-background" :style="modalStyle" ref="modalRef" tabindex="-1" @focusout="handleFocusOut">
         <div class="card view-member-profile">
-            <div class="profile-banner" :class="{'empty':user?.avatar}">
-                <img :src="pb.files.getURL(user, user.avatar)" alt="avatar" class="user-avatar" v-if="user?.avatar" />
+            <div class="profile-banner" :class="{ empty: !user?.avatar }">
+                <img v-if="user?.avatar" :src="avatarUrl" alt="avatar" class="user-avatar" />
                 <span v-else class="user-avatar-placeholder">{{ user?.name?.[0] ?? "?" }}</span>
+            </div>
+            <div class="profile-name">
+                {{ user?.name ?? "Unknown User" }}
             </div>
         </div>
     </div>
@@ -12,7 +15,7 @@
 <script setup lang="ts">
 import pb from "../../service/pocketbase";
 import { useModal } from "@vmrh/core";
-import { computed, nextTick, onMounted, ref, watch } from "vue";
+import { computed, nextTick, ref, watch } from "vue";
 
 const { close, isActive } = useModal("ViewMemberProfile");
 const modalRef = ref<HTMLDivElement | null>(null);
@@ -31,6 +34,13 @@ const props = defineProps<{
  * User Information
  */
 const user = ref<any>(null);
+const avatarUrl = computed(() => {
+    if (!user.value?.avatar) {
+        return "";
+    }
+
+    return pb.files.getURL(user.value, user.value.avatar);
+});
 
 const fallbackPosition = computed(() => {
     if (typeof window === "undefined") {
@@ -73,15 +83,25 @@ watch(isActive, async (active) => {
     modalRef.value?.focus();
 });
 
-onMounted(async () => {
-    try {
-        user.value = await pb.collection("users").getOne(props.user_id, {
-            requestKey: `user-profile-${props.user_id}`, // cache user data
-        });
-    } catch (error) {
-        console.error("Failed to fetch user data:", error);
-    }
-});
+watch(
+    () => props.user_id,
+    async (userId) => {
+        if (!userId) {
+            user.value = null;
+            return;
+        }
+
+        try {
+            user.value = await pb.collection("users").getOne(userId, {
+                requestKey: `user-profile-${userId}`,
+            });
+        } catch (error) {
+            console.error("Failed to fetch user data:", error);
+            user.value = null;
+        }
+    },
+    { immediate: true }
+);
 </script>
 
 <style lang="scss" scoped>
@@ -112,6 +132,7 @@ onMounted(async () => {
 .view-member-profile {
     width: 300px;
     height: 400px;
+    padding: 1em;
 
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
 
@@ -144,6 +165,15 @@ onMounted(async () => {
                 color: var(--theme-text-secondary, #888);
             }
         }
+    }
+
+    .profile-name {
+        width: 100%;
+        justify-content: center;
+        margin-top: 1rem;
+        font-size: 1.25rem;
+        font-weight: bold;
+        color: var(--theme-text, #1a1a1a);
     }
 }
 </style>
