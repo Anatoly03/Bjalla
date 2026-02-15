@@ -6,6 +6,12 @@
             <span class="fill">{{ message.content }}</span>
             <button v-if="canDeleteMessages || message.expand.author.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
         </div>
+        <div class="load-early-messages">
+            <button
+                @click="currentPage++; loadMessages()"
+                :disabled="currentPage >= lastPage"
+                >Load earlier messages</button>
+        </div>
     </div>
 </template>
 
@@ -24,6 +30,11 @@ const route = useRoute();
  * Messages of the current channel.
  */
 const messages = ref<any[]>([]);
+
+// Pagination
+const currentPage = ref(1);
+const lastPage = ref(2);
+const pageSize = 30;
 
 /**
  * If true, the user can delete messages in the current channel.
@@ -69,19 +80,28 @@ async function deleteMessage(messageId: string) {
     }
 }
 
-/**
- * Fetch messages for the current channel on mount and listen
- * for real-time updates to messages in the current channel.
- */
-onMounted(async () => {
+async function loadMessages() {
     // Fetch messages for the current channel on mount
-    const resultList = await pb.collection("messages").getList(1, 50, {
+    const resultList = await pb.collection("messages").getList(currentPage.value, pageSize, {
         requestKey: "messages-" + route.params.channel, // cache results per channel
         sort: "-created", // sort by creation date descending
         filter: `channel="${route.params.channel}"`,
         expand: "author",
     });
-    messages.value = resultList.items;
+
+    lastPage.value = resultList.totalPages;
+    messages.value.push(...resultList.items);
+
+    // sort messages by creation date ascending to show oldest messages at the top
+    messages.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+}
+
+/**
+ * Fetch messages for the current channel on mount and listen
+ * for real-time updates to messages in the current channel.
+ */
+onMounted(async () => {
+    await loadMessages();
 
     // Listen for real-time updates to messages in the current channel.
     unsubscribeFunc.value = await pb.collection("messages").subscribe("*", receiveMessage, {
@@ -126,6 +146,12 @@ onBeforeUnmount(() => {
             flex: 1;
             margin-left: 0.5em;
         }
+    }
+
+    .load-early-messages {
+        display: flex;
+        justify-content: center;
+        padding: 0.5em;
     }
 }
 </style>
