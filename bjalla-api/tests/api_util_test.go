@@ -9,6 +9,7 @@ import (
 )
 
 // setupTestApp initializes a new TestApp instance.
+// TODO: read what testing.TB | testing.B | testing.T difference is
 func setupTestApp(t testing.TB) *tests.TestApp {
 	_, filePath, _, _ := runtime.Caller(0)
 	dataDir := filepath.Clean(filepath.Join(filepath.Dir(filePath), "..", "pb_data"))
