@@ -14,6 +14,12 @@
                 <td class="permission-col"><input type="checkbox" :checked="role.is_default" disabled /></td>
                 <td class="fill-col"></td>
             </tr>
+            <tr>
+                <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" /></td>
+                <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" /></td>
+                <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" /></td>
+                <td class="fill-col"><button @click="createRole">Create Role</button></td>
+            </tr>
         </table>
     </div>
 </template>
@@ -29,6 +35,33 @@ const route = useRoute();
  * Roles of the current guild.
  */
 const roles = ref<any[]>([]);
+
+/**
+ * Proposed new role
+ */
+const newRoleName = ref("");
+const newRoleIsAdmin = ref(false);
+const newRoleIsDefault = ref(false);
+
+/**
+ * Creates a new role with the name from the input field and default permissions.
+ */
+async function createRole() {
+    const newRole = await pb.collection("guild_roles").create({
+        name: newRoleName.value,
+        is_admin: newRoleIsAdmin.value,
+        is_default: newRoleIsDefault.value,
+        guild: route.params.guild
+    });
+
+    // reset input fields
+    newRoleName.value = "";
+    newRoleIsAdmin.value = false;
+    newRoleIsDefault.value = false;
+
+    // add new role to the list
+    roles.value.push(newRole);
+}
 
 /**
  * Sync roles from PocketBase on component mount.
