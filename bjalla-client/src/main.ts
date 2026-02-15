@@ -2,7 +2,10 @@ import { createApp } from "vue";
 import { createModalRoute } from "@vmrh/core";
 
 import App from "./components/App.vue";
+
 import "./assets/style.scss";
+import "./assets/color.scss";
+import { initTheme } from "./service/theme";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -16,5 +19,7 @@ const router = createModalRoute({
 });
 
 library.add(fab, far, fas);
+
+initTheme();
 
 createApp(App).component("font-awesome-icon", FontAwesomeIcon).use(router).mount("#app");
