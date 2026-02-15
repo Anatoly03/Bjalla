@@ -4,8 +4,6 @@ name: Run Tests
 on:
   pull_request:
     types: [opened, reopened, synchronize]
-  push:
-    branches: [main, dev]
 
 jobs:
   test-api:
