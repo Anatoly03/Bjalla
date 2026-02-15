@@ -1,8 +1,11 @@
 <template>
     <div class="view-channels">
-        <router-link :to="`/${route.params.guild}/${row.expand.channel.id}`" v-for="row in channels" :key="row.id" class="channel-item" :class="{ active: route.params.channel === row.expand.channel.id }">
-            {{ row.expand.channel.name }}
+        <router-link :to="`/${route.params.guild}/${channel.id}`" v-for="channel in channels" :key="channel.id" class="channel-item" :class="{ active: route.params.channel === channel.id }">
+            {{ channel.name }}
         </router-link>
+        <div @click="openGuildSettings" class="channel-item view-guilds-create">
+            <font-awesome-icon icon="fa-solid fa-gear" />
+        </div>
     </div>
 </template>
 
@@ -10,6 +13,9 @@
 import pb from "../../service/pocketbase";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+import { useModalRoute } from "@vmrh/core";
+
+const { openModal } = useModalRoute();
 
 /**
  * Route instance to get the current guild and channel from the URL.
@@ -21,16 +27,22 @@ const route = useRoute();
  */
 const channels = ref<any[]>([]);
 
+/**
+ * Opens the guild settings modal.
+ */
+async function openGuildSettings() {
+    await openModal("GuildSettings");
+}
+
 onMounted(async () => {
     if (!route.params.guild) return;
 
-    const resultList = await pb.collection("guild_channels").getList(1, 50, {
+    const resultList = await pb.collection("channels").getList(1, 50, {
         requestKey: 'channels-' + route.params.guild, // cache results per guild
-        expand: "channel",
         filter: `guild="${route.params.guild}"`,
     });
 
-    console.log(resultList);
+    console.log('Fetched Channels', resultList.items);
 
     channels.value = resultList.items;
 });
@@ -56,11 +68,11 @@ onMounted(async () => {
         text-decoration: none;
 
         &:hover {
-            background: #eee;
+            background: var(--theme-bg-1, #e0c9b7);
         }
 
         &.active {
-            background: #ddd;
+            background: var(--theme-bg-2, #ddd);
         }
     }
 }

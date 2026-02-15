@@ -9,19 +9,19 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+// import { useRouter } from "vue-router";
 import pb from "../../service/pocketbase";
 import { useModalRoute } from "@vmrh/core";
 
-const router = useRouter();
+// const router = useRouter();
 const { openModal } = useModalRoute();
 
-function openProfile() {
-    const currentPath = router.currentRoute.value.fullPath;
+async function openProfile() {
+    // const currentPath = router.currentRoute.value.fullPath;
 
-    openModal("ProfileSettings");
+    await openModal("ProfileSettings");
     // hotfix: keep the visible URL unchanged while modal is open.
-    setTimeout(() => window.history.replaceState(window.history.state, "", currentPath), 0);
+    // setTimeout(() => window.history.replaceState(window.history.state, "", currentPath), 0);
 }
 </script>
 
@@ -41,7 +41,7 @@ function openProfile() {
     .card {
         margin: 0 1em;
         padding: 0.25em;
-        background-color: white;
+        background-color: var(--theme-bg-1, #e0c9b7);
 
         // width: 100%;
         box-sizing: border-box;
@@ -56,11 +56,11 @@ function openProfile() {
             cursor: pointer;
 
             &:hover {
-                background: #eee;
+                background: var(--theme-bg-2, #e0c9b7);
             }
 
             &.active {
-                background: #ddd;
+                background: var(--theme-bg-3, #ddd);
             }
         }
     }
