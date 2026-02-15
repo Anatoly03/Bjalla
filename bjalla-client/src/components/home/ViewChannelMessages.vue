@@ -1,8 +1,10 @@
 <template>
     <div class="view-channel-messages">
         <div v-for="message in messages" :key="message.id" class="message">
-            <strong>{{ message.expand.author.name }}</strong
-            >: {{ message.content }}
+            <strong>{{ message.expand.author.name }}</strong>
+            <span>:</span>
+            <span class="fill">{{ message.content }}</span>
+            <button v-if="canDeleteMessages || message.expand.author.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
         </div>
     </div>
 </template>
@@ -22,6 +24,11 @@ const route = useRoute();
  * Messages of the current channel.
  */
 const messages = ref<any[]>([]);
+
+/**
+ * If true, the user can delete messages in the current channel.
+ */
+const canDeleteMessages = ref(false);
 
 /**
  * Messages of the current channel.
@@ -52,6 +59,17 @@ function receiveMessage(event: RecordSubscription<RecordModel>) {
 }
 
 /**
+ * Deletes a message by its ID.
+ */
+async function deleteMessage(messageId: string) {
+    try {
+        await pb.collection("messages").delete(messageId);
+    } catch (error) {
+        console.error("Failed to delete message:", error);
+    }
+}
+
+/**
  * Fetch messages for the current channel on mount and listen
  * for real-time updates to messages in the current channel.
  */
@@ -69,6 +87,15 @@ onMounted(async () => {
     unsubscribeFunc.value = await pb.collection("messages").subscribe("*", receiveMessage, {
         expand: "author", // expand author on real-time events as well
     });
+
+    // Test auth user permissions
+    const memebrship = await pb.collection("guild_members").getFirstListItem(`guild="${route.params.guild}" && user="${pb.authStore.record?.id}"`, {
+        expand: "roles",
+    });
+
+    // Test individual permissions
+    const roles = memebrship.expand?.roles || [];
+    canDeleteMessages.value = roles.some((r: any) => r.is_admin);
 });
 
 onBeforeUnmount(() => {
@@ -92,6 +119,11 @@ onBeforeUnmount(() => {
 
         &:hover {
             background: var(--theme-bg-1, #e0c9b7);
+        }
+
+        .fill {
+            flex: 1;
+            margin-left: 0.5em;
         }
     }
 }
