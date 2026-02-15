@@ -1,10 +1,10 @@
 <template>
     <div class="view-channel-messages">
         <div v-for="message in messages" :key="message.id" class="message">
-            <strong>{{ message.expand.author?.name ?? '???' }}</strong>
+            <strong>{{ message.expand?.author?.name ?? '???' }}</strong>
             <span>:</span>
             <span class="fill">{{ message.content }}</span>
-            <button v-if="canDeleteMessages || message.expand.author?.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
+              <button v-if="canDeleteMessages || message.expand?.author?.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
         </div>
         <div class="load-early-messages">
             <button
@@ -100,7 +100,7 @@ async function loadMessages() {
         lastPage.value = resultList.totalPages;
         messages.value.push(...resultList.items);
 
-        // sort messages by creation date descending
+        // sort messages by creation date descending so column-reverse shows oldest at the top
         messages.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
     } finally {
         isLoading.value = false;

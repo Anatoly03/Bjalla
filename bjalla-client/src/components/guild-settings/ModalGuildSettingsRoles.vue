@@ -4,11 +4,11 @@
         <table class="role-matrix">
             <thead>
                 <tr class="permissions">
-                    <td class="role-name-col"></td>
-                    <td class="permission-col">Admin</td>
-                    <td class="permission-col">Default</td>
-                    <td class="fill-col"></td>
-                    <td class="delete-col"></td>
+                    <th class="role-name-col" scope="col"></th>
+                    <th class="permission-col" scope="col">Admin</th>
+                    <th class="permission-col" scope="col">Default</th>
+                    <th class="fill-col" scope="col"></th>
+                    <th class="delete-col" scope="col"></th>
                 </tr>
             </thead>
             <tbody>
