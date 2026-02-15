@@ -1,6 +1,6 @@
 <template>
-    <div v-if="isActive" class="view-member-profile-modal-overlay" @click.self="closeModal">
-        <div class="view-member-profile-modal-background" :style="modalStyle">
+    <div v-if="isActive" class="view-member-profile-modal-overlay">
+        <div class="view-member-profile-modal-background" :style="modalStyle" ref="modalRef">
             <div class="card view-member-profile">
                 <div class="profile-banner" :class="{ empty: !user?.avatar }">
                     <img v-if="user?.avatar" :src="avatarUrl" alt="avatar" class="user-avatar" />
@@ -17,9 +17,10 @@
 <script setup lang="ts">
 import pb from "../../service/pocketbase";
 import { useModal } from "@vmrh/core";
-import { computed, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 const { close, isActive } = useModal("ViewMemberProfile");
+const modalRef = ref<HTMLDivElement | null>(null);
 
 /**
  * Gets the user ID and guild ID from the query parameters, as well as
@@ -71,6 +72,25 @@ function closeModal() {
     close();
 }
 
+function handlePointerDown(event: PointerEvent) {
+    if (!isActive.value) return;
+
+    const target = event.target as Node | null;
+    if (target && modalRef.value?.contains(target)) {
+        return;
+    }
+
+    closeModal();
+}
+
+onMounted(() => {
+    document.addEventListener("pointerdown", handlePointerDown, true);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("pointerdown", handlePointerDown, true);
+});
+
 watch(
     () => props.user_id,
     async (userId) => {
@@ -100,10 +120,12 @@ watch(
     position: fixed;
     inset: 0;
     z-index: 1000;
+    pointer-events: none;
 }
 
 .view-member-profile-modal-background {
     position: fixed;
+    pointer-events: auto;
     transform: translateX(-100%);
     transform-origin: top right;
 
