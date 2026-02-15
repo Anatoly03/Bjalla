@@ -18,7 +18,7 @@ func TestBjallaBotExists(t *testing.T) {
 		app.Cleanup()
 	})
 
-	token := getAuthToken(app, "pbbotbjalla0000")
+	token := getAuthToken(t, app, "pbbotbjalla0000")
 	testAppFactory := func(t testing.TB) *tests.TestApp {
 		return app
 	}
