@@ -27,12 +27,12 @@ input[type=submit] {
     font-size: 14px;
     box-sizing: border-box;
 
-    &:hover {
+    &:not([disabled]):hover {
         border-color: #3a5;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
     }
 
-    &:active {
+    &:not([disabled]):active {
         outline: none;
         border-color: #4c7;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);

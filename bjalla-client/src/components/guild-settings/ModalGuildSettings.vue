@@ -1,9 +1,9 @@
 <template>
     <div v-if="isActive" class="modal-background" @click.self="closeModal">
-        <div class="modal modal-profile-settings">
+        <div class="modal modal-guild-settings">
             <div class="modal-sidebar">
-                <a @click="navigateTo('ProfileSettingsGeneral')" class="modal-sidebar-item">General</a>
-                <a @click="navigateTo('ProfileSettingsTheme')" class="modal-sidebar-item">Theme</a>
+                <a @click="navigateTo('GuildSettingsGeneral')" class="modal-sidebar-item">General</a>
+                <a @click="navigateTo('GuildSettingsRoles')" class="modal-sidebar-item">Roles</a>
             </div>
             <div class="modal-content">
                 <ModalRouterView />
@@ -15,10 +15,10 @@
 <script setup lang="ts">
 import { ModalRouterView, useModal } from "@vmrh/core";
 import { useRoute, useRouter } from "vue-router";
-import ModalProfileSettingsGeneral from "./ModalProfileSettingsGeneral.vue";
-import ModalProfileSettingsTheme from "./ModalProfileSettingsTheme.vue";
+import ModalGuildSettingsGeneral from "./ModalGuildSettingsGeneral.vue";
+import ModalGuildSettingsRoles from "./ModalGuildSettingsRoles.vue";
 
-const { close, isActive } = useModal("ProfileSettings");
+const { close, isActive } = useModal("GuildSettings");
 const router = useRouter();
 const route = useRoute();
 
@@ -51,8 +51,8 @@ async function navigateTo(name: string) {
  */
 defineOptions({
     routes: [
-        { name: "ProfileSettingsGeneral", path: "", component: ModalProfileSettingsGeneral },
-        { name: "ProfileSettingsTheme", path: "theme", component: ModalProfileSettingsTheme },
+        { name: "GuildSettingsGeneral", path: "", component: ModalGuildSettingsGeneral },
+        { name: "GuildSettingsRoles", path: "roles", component: ModalGuildSettingsRoles },
     ],
 });
 </script>

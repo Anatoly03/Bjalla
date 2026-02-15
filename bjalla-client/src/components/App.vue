@@ -12,6 +12,11 @@ import ModalProfileSettingsTheme from "./settings/ModalProfileSettingsTheme.vue"
 import NotFound from "./NotFound.vue";
 import ViewAuth from "./ViewAuth.vue";
 import ViewHome from "./home/ViewHome.vue";
+import ModalCreateGuild from "./create-guild/ModalCreateGuild.vue";
+import ModalGuildSettings from "./guild-settings/ModalGuildSettings.vue";
+import ModalGuildSettingsGeneral from "./guild-settings/ModalGuildSettingsGeneral.vue";
+import ModalGuildSettingsRoles from "./guild-settings/ModalGuildSettingsRoles.vue";
+import ModalViewMemberProfile from "./view-member-profile/ModalViewMemberProfile.vue";
 
 defineOptions({
     routes: [
@@ -32,6 +37,28 @@ defineOptions({
                 { name: "ProfileSettingsTheme", path: "theme", component: ModalProfileSettingsTheme },
             ],
         },
+        {
+            path: "create-guild",
+            name: "CreateGuild",
+            component: ModalCreateGuild,
+            meta: { modal: true, direct: false },
+        },
+        {
+            path: "guild-settings",
+            name: "GuildSettings",
+            component: ModalGuildSettings,
+            meta: { modal: true, direct: false },
+            children: [
+                { name: "GuildSettingsGeneral", path: "", component: ModalGuildSettingsGeneral },
+                { name: "GuildSettingsRoles", path: "roles", component: ModalGuildSettingsRoles },
+            ],
+        },
+        {
+            path: "view-member-profile",
+            name: "ViewMemberProfile",
+            component: ModalViewMemberProfile,
+            meta: { modal: true, direct: false },
+        }
     ]
 });
 </script>
