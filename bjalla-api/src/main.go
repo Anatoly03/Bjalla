@@ -13,7 +13,7 @@ import (
 func main() {
 	// Check if the program is in development mode.
 	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
-	isAutoMigrate := isGoRun || os.Getenv("BJALLA_AUTOMIGRATE") == "1"
+	isAutoMigrate := isGoRun || os.Getenv("AUTOMIGRATE") == "1"
 
 	_ = godotenv.Load(".env")
 	app := pocketbase.New()
