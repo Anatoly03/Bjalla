@@ -56,11 +56,11 @@ onMounted(async () => {
         text-decoration: none;
 
         &:hover {
-            background: #eee;
+            background: var(--theme-bg-1, #e0c9b7);
         }
 
         &.active {
-            background: #ddd;
+            background: var(--theme-bg-2, #ddd);
         }
     }
 }

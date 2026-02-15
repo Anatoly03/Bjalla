@@ -41,7 +41,7 @@ function openProfile() {
     .card {
         margin: 0 1em;
         padding: 0.25em;
-        background-color: white;
+        background-color: var(--theme-bg-1, #e0c9b7);
 
         // width: 100%;
         box-sizing: border-box;
@@ -56,11 +56,11 @@ function openProfile() {
             cursor: pointer;
 
             &:hover {
-                background: #eee;
+                background: var(--theme-bg-2, #e0c9b7);
             }
 
             &.active {
-                background: #ddd;
+                background: var(--theme-bg-3, #ddd);
             }
         }
     }

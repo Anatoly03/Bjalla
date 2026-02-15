@@ -81,7 +81,7 @@ defineOptions({
     width: 80%;
     height: 80%;
 
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--theme-bg-2, #f2e6d6);
     backdrop-filter: blur(4px);
     border-radius: 0.5rem;
     padding: 1rem;
@@ -97,22 +97,20 @@ defineOptions({
 .modal-sidebar {
     width: 200px;
     border-right: 1px solid #ccc;
-    padding: 1rem;
 
     .modal-sidebar-item {
         display: block;
         padding: 0.5rem;
-        color: #333;
+        color: inherit;
         text-decoration: none;
         cursor: pointer;
 
         &.active {
-            background-color: #eee;
-            font-weight: bold;
+            background-color: var(--theme-bg-2, #e0c9b7);
         }
 
         &:hover {
-            background-color: #f5f5f5;
+            background-color: var(--theme-bg-1, #f5f5f5);
         }
     }
 }
