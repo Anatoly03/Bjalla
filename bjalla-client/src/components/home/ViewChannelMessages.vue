@@ -109,12 +109,12 @@ onMounted(async () => {
     });
 
     // Test auth user permissions
-    const memebrship = await pb.collection("guild_members").getFirstListItem(`guild="${route.params.guild}" && user="${pb.authStore.record?.id}"`, {
+    const membership = await pb.collection("guild_members").getFirstListItem(`guild="${route.params.guild}" && user="${pb.authStore.record?.id}"`, {
         expand: "roles",
     });
 
     // Test individual permissions
-    const roles = memebrship.expand?.roles || [];
+    const roles = membership.expand?.roles || [];
     canDeleteMessages.value = roles.some((r: any) => r.is_admin);
 });
 

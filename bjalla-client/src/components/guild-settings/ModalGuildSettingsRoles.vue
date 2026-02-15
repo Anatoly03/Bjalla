@@ -15,16 +15,16 @@
                 <td class="permission-col"><input type="checkbox" :checked="role.is_default" disabled /></td>
                 <td class="fill-col"></td>
                 <td class="delete-col">
-                    <button @click="deleteRole(role.id)">
+                    <button @click="deleteRole(role.id)" :disabled="!canEditRoles">
                         <font-awesome-icon icon="fa-solid fa-trash-can" />
                     </button>
                 </td>
             </tr>
             <tr>
-                <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" /></td>
-                <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" /></td>
-                <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" /></td>
-                <td class="fill-col"><button @click="createRole">Create Role</button></td>
+                <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" :disabled="!canEditRoles" /></td>
+                <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" :disabled="!canEditRoles" /></td>
+                <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" :disabled="!canEditRoles" /></td>
+                <td class="fill-col"><button @click="createRole" :disabled="!canEditRoles">Create Role</button></td>
                 <td class="delete-col"></td>
             </tr>
         </table>
@@ -42,6 +42,11 @@ const route = useRoute();
  * Roles of the current guild.
  */
 const roles = ref<any[]>([]);
+
+/**
+ * If true, the user can edit roles in the current guild.
+ */
+const canEditRoles = ref(false);
 
 /**
  * Proposed new role
@@ -90,6 +95,15 @@ onMounted(async () => {
     } catch (error) {
         console.error("Failed to fetch roles:", error);
     }
+
+    // Test auth user permissions
+    const membership = await pb.collection("guild_members").getFirstListItem(`guild="${route.params.guild}" && user="${pb.authStore.record?.id}"`, {
+        expand: "roles",
+    });
+
+    // Test individual permissions
+    const userRoles = membership.expand?.roles || [];
+    canEditRoles.value = userRoles.some((r: any) => r.is_admin);
 })
 </script>
 
