@@ -7,18 +7,25 @@
                 <td class="permission-col">Admin</td>
                 <td class="permission-col">Default</td>
                 <td class="fill-col"></td>
+                <td class="delete-col"></td>
             </tr>
             <tr v-for="role in roles" :key="role.id" class="role">
                 <th class="role-name-col">{{ role.name }}</th>
                 <td class="permission-col"><input type="checkbox" :checked="role.is_admin" disabled /></td>
                 <td class="permission-col"><input type="checkbox" :checked="role.is_default" disabled /></td>
                 <td class="fill-col"></td>
+                <td class="delete-col">
+                    <button @click="deleteRole(role.id)">
+                        <font-awesome-icon icon="fa-solid fa-trash-can" />
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" /></td>
                 <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" /></td>
                 <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" /></td>
                 <td class="fill-col"><button @click="createRole">Create Role</button></td>
+                <td class="delete-col"></td>
             </tr>
         </table>
     </div>
@@ -61,6 +68,14 @@ async function createRole() {
 
     // add new role to the list
     roles.value.push(newRole);
+}
+
+/**
+ * Deletes the role with the given ID and removes it from the list.
+ */
+async function deleteRole(roleId: string) {
+    const result = await pb.collection("guild_roles").delete(roleId);
+    roles.value = roles.value.filter(role => role.id !== roleId);
 }
 
 /**
