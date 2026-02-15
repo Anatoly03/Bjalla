@@ -1,6 +1,10 @@
 <template>
     <div class="modal-view-general">
-        <h2>{{ pb.authStore.record!.name }} <small>({{ pb.authStore.record!.email }})</small></h2>
+        <h2>
+            {{ pb.authStore.record!.name }}
+            <small>({{ pb.authStore.record!.email }})</small>
+            <button @click="logout">Logout</button>
+        </h2>
         <div class="row">
             <input type="text" v-model="newName">
             <button @click="updateName">Update Name</button>
@@ -29,6 +33,15 @@ const newName = ref(pb.authStore.record!.name);
  * Current users' avatar.
  */
 const avatar = ref(pb.authStore.record!.avatar);
+
+/**
+ * Logs out
+ */
+function logout() {
+    pb.authStore.clear();
+    close();
+    window.location.reload();
+}
 
 /**
  * Updates the user's name in PocketBase and closes the modal on success.
