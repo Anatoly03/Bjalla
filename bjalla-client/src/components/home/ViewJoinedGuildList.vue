@@ -41,10 +41,12 @@ onMounted(async () => {
 .view-guilds {
     display: flex;
     flex-direction: column;
-    margin: 0.5em;
+    padding-top: 0.5em;
+    margin-left: 0.5em;
     padding-right: 0.5em;
     border-right: 1px solid black;
     gap: 0.5rem;
+    overflow-y: scroll;
 
     .view-guilds-item {
         display: flex;

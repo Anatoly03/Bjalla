@@ -1,6 +1,12 @@
 {
-    "workspaces": ["bjalla-client"],
+    "workspaces": [
+        "bjalla-client"
+    ],
     "scripts": {
         "serve": "npm run dev --workspace bjalla-client"
+    },
+    "dependencies": {
+        "@vmrh/core": "^0.2.0-alpha",
+        "vue-router": "^4.6.4"
     }
 }

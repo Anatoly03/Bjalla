@@ -45,6 +45,7 @@ onMounted(async () => {
     flex-direction: column;
     padding: 0.5em;
     gap: 0.25rem;
+    overflow-y: scroll;
 
     .channel-item {
         display: flex;

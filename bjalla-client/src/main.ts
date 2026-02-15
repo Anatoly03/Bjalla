@@ -1,7 +1,5 @@
 import { createApp } from "vue";
-import { createWebHistory, createRouter } from "vue-router";
-
-import pb from './service/pocketbase';
+import { createModalRoute } from "@vmrh/core";
 
 import App from "./components/App.vue";
 import "./assets/style.scss";
@@ -12,10 +10,10 @@ import { far } from "@fortawesome/free-regular-svg-icons";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-const router = createRouter({
-    history: createWebHistory(),
+const router = createModalRoute({
     routes: App.routes,
-})
+    global: App.global,
+});
 
 library.add(fab, far, fas);
 

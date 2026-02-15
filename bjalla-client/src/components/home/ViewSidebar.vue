@@ -29,6 +29,7 @@ import ViewJoinedGuildList from "./ViewJoinedGuildList.vue";
         display: flex;
         flex-direction: row;
         flex: 1;
+        overflow: hidden;
     }
 }
 </style>
