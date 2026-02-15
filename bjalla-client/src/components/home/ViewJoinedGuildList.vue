@@ -18,10 +18,9 @@
 <script setup lang="ts">
 import pb from "../../service/pocketbase";
 import { onMounted, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { useModalRoute } from "@vmrh/core";
 
-const router = useRouter();
 const { openModal } = useModalRoute();
 
 /**
@@ -38,7 +37,7 @@ const guilds = ref<any[]>([]);
  * Opens the guild proposal modal.
  */
 async function openGuildProposal() {
-    const currentPath = router.currentRoute.value.fullPath;
+    // const currentPath = router.currentRoute.value.fullPath;
 
     await openModal("CreateGuild");
     // hotfix: keep the visible URL unchanged while modal is open.

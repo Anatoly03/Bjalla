@@ -3,7 +3,7 @@
         <ViewSidebar />
         <div class="view-home-content">
             <ViewChannel />
-            <ViewMemberList :key="$route.params.guild" />
+            <ViewMemberList :key="$route.params.guild as any" />
         </div>
     </div>
 </template>

@@ -93,7 +93,7 @@ onMounted(async () => {
 /**
  * Handle form submission for authentication.
  */
-async function authWithPassword(e: SubmitEvent) {
+async function authWithPassword(_: SubmitEvent) {
     try {
         const authData = await pb.collection("users").authWithPassword(username.value, password.value);
         authenticate(authData);

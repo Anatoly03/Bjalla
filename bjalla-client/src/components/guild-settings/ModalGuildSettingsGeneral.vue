@@ -5,57 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import pb from "../../service/pocketbase";
-import { useCurrentModal } from "@vmrh/core";
-import { ref } from "vue";
-
-const { close } = useCurrentModal();
-
-/**
- * Fields for profile rename functionality.
- */
-const newName = ref(pb.authStore.record!.name);
-
-/**
- * Current users' avatar.
- */
-const avatar = ref(pb.authStore.record!.avatar);
-
-/**
- * Updates the user's name in PocketBase and closes the modal on success.
- */
-async function updateName() {
-    try {
-        await pb.collection("users").update(pb.authStore.record!.id, {
-            name: newName.value,
-        });
-        pb.authStore.record!.name = newName.value;
-        close();
-    } catch (error) {
-        console.error("Failed to update name:", error);
-    }
-}
-
-/**
- * Updates the users' avatar in PocketBase and closes the modal on success.
- */
-async function uploadAvatar(event: Event) {
-    const target = event.target as HTMLInputElement;
-    if (!target.files || target.files.length === 0) return;
-
-    const file = target.files[0];
-    const formData = new FormData();
-    formData.append("avatar", file);
-
-    try {
-        await pb.collection("users").update(pb.authStore.record!.id, formData);
-        const updatedRecord = await pb.collection("users").getOne(pb.authStore.record!.id);
-        pb.authStore.record!.avatar = updatedRecord.avatar;
-        close();
-    } catch (error) {
-        console.error("Failed to upload avatar:", error);
-    }
-}
 </script>
 
 <style lang="scss" scoped>

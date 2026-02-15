@@ -1,6 +1,6 @@
 <template>
     <div class="view-channel">
-        <ViewChannelMessages :key="$route.params.channel" />
+        <ViewChannelMessages :key="$route.params.channel as any" />
         <input type="text" placeholder="Message channel" class="view-channel-input" @keypress.enter="sendMessage" />
     </div>
 </template>

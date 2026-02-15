@@ -3,7 +3,7 @@
         <div class="view-sidebar-content">
             <ViewJoinedGuildList />
             <div class="separator"></div>
-            <ViewChannelList :key="$route.params.guild" />
+            <ViewChannelList :key="$route.params.guild as any" />
         </div>
         <ViewAuthCard />
     </div>

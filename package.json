@@ -3,7 +3,8 @@
         "bjalla-client"
     ],
     "scripts": {
-        "serve": "npm run dev --workspace bjalla-client"
+        "serve": "npm run dev --workspace bjalla-client",
+        "build": "npm run build --workspace bjalla-client"
     },
     "dependencies": {
         "@vmrh/core": "^0.2.0-alpha",
