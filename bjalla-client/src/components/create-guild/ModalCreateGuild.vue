@@ -1,5 +1,5 @@
 <template>
-    <div v-if="modelValue" class="modal-background" @click.self="closeModal">
+    <div v-if="isActive" class="modal-background" @click.self="closeModal">
         <div class="modal modal-create-guild card">
             <div class="card-header">
                 Propose New Guild
@@ -25,10 +25,10 @@
 </template>
 
 <script setup lang="ts">
-import { useCurrentModal } from "@vmrh/core";
+import { useModal } from "@vmrh/core";
 import { ref } from "vue";
 
-const { close, modelValue } = useCurrentModal();
+const { close, isActive } = useModal("CreateGuild");
 
 const imgFile = ref<string | null>(null);
 
