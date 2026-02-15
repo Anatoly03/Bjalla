@@ -14,6 +14,14 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Cache pb_data
+        uses: actions/cache@v4
+        with:
+          path: bjalla-api/pb_data
+          key: pb-data-${{ runner.os }}-${{ hashFiles('bjalla-api/migrations/**', 'bjalla-api/go.sum') }}
+          restore-keys: |
+            pb-data-${{ runner.os }}-
+
       - name: Setup Go 1.25.x
         uses: actions/setup-go@v5
         with:
@@ -23,6 +31,11 @@ jobs:
       - name: Install dependencies
         working-directory: bjalla-api
         run: go mod download
+
+        # https://github.com/Anatoly03/Bjalla/actions/runs/22040635863/job/63680850206?pr=4
+      - name: Prepare pb_data
+        working-directory: bjalla-api
+        run: mkdir -p pb_data
 
       - name: Test API
         working-directory: bjalla-api
