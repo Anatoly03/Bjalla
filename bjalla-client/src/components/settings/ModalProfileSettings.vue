@@ -96,7 +96,7 @@ defineOptions({
 
 .modal-sidebar {
     width: 200px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #aaa;
 
     .modal-sidebar-item {
         display: block;

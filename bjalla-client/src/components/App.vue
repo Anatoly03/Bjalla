@@ -15,6 +15,7 @@ import ViewHome from "./home/ViewHome.vue";
 import ModalCreateGuild from "./create-guild/ModalCreateGuild.vue";
 import ModalGuildSettings from "./guild-settings/ModalGuildSettings.vue";
 import ModalGuildSettingsGeneral from "./guild-settings/ModalGuildSettingsGeneral.vue";
+import ModalGuildSettingsRoles from "./guild-settings/ModalGuildSettingsRoles.vue";
 
 defineOptions({
     routes: [
@@ -48,6 +49,7 @@ defineOptions({
             meta: { modal: true, direct: false },
             children: [
                 { name: "GuildSettingsGeneral", path: "", component: ModalGuildSettingsGeneral },
+                { name: "GuildSettingsRoles", path: "roles", component: ModalGuildSettingsRoles },
             ],
         },
     ]

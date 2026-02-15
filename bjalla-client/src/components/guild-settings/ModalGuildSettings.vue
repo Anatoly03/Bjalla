@@ -3,6 +3,7 @@
         <div class="modal modal-guild-settings">
             <div class="modal-sidebar">
                 <a @click="navigateTo('GuildSettingsGeneral')" class="modal-sidebar-item">General</a>
+                <a @click="navigateTo('GuildSettingsRoles')" class="modal-sidebar-item">Roles</a>
             </div>
             <div class="modal-content">
                 <ModalRouterView />
@@ -15,6 +16,7 @@
 import { ModalRouterView, useModal } from "@vmrh/core";
 import { useRoute, useRouter } from "vue-router";
 import ModalGuildSettingsGeneral from "./ModalGuildSettingsGeneral.vue";
+import ModalGuildSettingsRoles from "./ModalGuildSettingsRoles.vue";
 
 const { close, isActive } = useModal("GuildSettings");
 const router = useRouter();
@@ -50,6 +52,7 @@ async function navigateTo(name: string) {
 defineOptions({
     routes: [
         { name: "GuildSettingsGeneral", path: "", component: ModalGuildSettingsGeneral },
+        { name: "GuildSettingsRoles", path: "roles", component: ModalGuildSettingsRoles },
     ],
 });
 </script>
@@ -93,7 +96,7 @@ defineOptions({
 
 .modal-sidebar {
     width: 200px;
-    border-right: 1px solid #ccc;
+    border-right: 1px solid #aaa;
 
     .modal-sidebar-item {
         display: block;
