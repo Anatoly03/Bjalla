@@ -5,6 +5,11 @@
             <input type="text" v-model="newName">
             <button @click="updateName">Update Name</button>
         </div>
+        <div class="row">
+            Avatar
+            <img :src="avatar ? `${pb.baseURL}/api/files/users/${pb.authStore.record!.id}/${avatar}` : ''" alt="Avatar" width="100">
+            <input type="file" @change="uploadAvatar">
+        </div>
     </div>
 </template>
 
@@ -21,6 +26,11 @@ const { close } = useCurrentModal();
 const newName = ref(pb.authStore.record!.name);
 
 /**
+ * Current users' avatar.
+ */
+const avatar = ref(pb.authStore.record!.avatar);
+
+/**
  * Updates the user's name in PocketBase and closes the modal on success.
  */
 async function updateName() {
@@ -32,6 +42,27 @@ async function updateName() {
         close();
     } catch (error) {
         console.error("Failed to update name:", error);
+    }
+}
+
+/**
+ * Updates the users' avatar in PocketBase and closes the modal on success.
+ */
+async function uploadAvatar(event: Event) {
+    const target = event.target as HTMLInputElement;
+    if (!target.files || target.files.length === 0) return;
+
+    const file = target.files[0];
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+        await pb.collection("users").update(pb.authStore.record!.id, formData);
+        const updatedRecord = await pb.collection("users").getOne(pb.authStore.record!.id);
+        pb.authStore.record!.avatar = updatedRecord.avatar;
+        close();
+    } catch (error) {
+        console.error("Failed to upload avatar:", error);
     }
 }
 </script>
