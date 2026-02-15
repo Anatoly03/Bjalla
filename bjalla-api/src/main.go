@@ -13,13 +13,14 @@ import (
 func main() {
 	// Check if the program is in development mode.
 	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+	isAutoMigrate := isGoRun || os.Getenv("BJALLA_AUTOMIGRATE") == "1"
 
 	_ = godotenv.Load(".env")
 	app := pocketbase.New()
 
 	// Register the migration command.
 	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
-		Automigrate: isGoRun,
+		Automigrate: isAutoMigrate,
 	})
 
 	if err := app.Start(); err != nil {

@@ -10,7 +10,7 @@
                     {{ user?.name ?? "Unknown User" }}
                 </div>
                 <div class="profile-roles">
-                    <span v-for="role in roles" :key="role.id" class="profile-role" :style="{ backgroundColor: role.color ? `#${role.color}` : '#888' }">
+                    <span v-for="role in roles" :key="role.id" class="profile-role" :style="{ 'background-color': role.color ? `#${role.color}` : '#888' }">
                         {{ role.name }}
                     </span>
                 </div>

@@ -5,4 +5,4 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 # Serve the API module
-go run src/main.go serve
+AUTOMIGRATE=1 go run src/main.go serve
