@@ -8,6 +8,7 @@
         </div>
         <div class="load-early-messages">
             <button
+                ref="loadButton"
                 @click="currentPage++; loadMessages()"
                 :disabled="currentPage >= lastPage"
                 >Load earlier messages</button>
@@ -35,6 +36,10 @@ const messages = ref<any[]>([]);
 const currentPage = ref(1);
 const lastPage = ref(2);
 const pageSize = 30;
+
+const loadButton = ref<HTMLButtonElement | null>(null);
+const isLoading = ref(false);
+const loadObserver = ref<IntersectionObserver | null>(null);
 
 /**
  * If true, the user can delete messages in the current channel.
@@ -81,19 +86,25 @@ async function deleteMessage(messageId: string) {
 }
 
 async function loadMessages() {
+    if (isLoading.value) return;
+    isLoading.value = true;
     // Fetch messages for the current channel on mount
-    const resultList = await pb.collection("messages").getList(currentPage.value, pageSize, {
-        requestKey: "messages-" + route.params.channel, // cache results per channel
-        sort: "-created", // sort by creation date descending
-        filter: `channel="${route.params.channel}"`,
-        expand: "author",
-    });
+    try {
+        const resultList = await pb.collection("messages").getList(currentPage.value, pageSize, {
+            requestKey: "messages-" + route.params.channel, // cache results per channel
+            sort: "-created", // sort by creation date descending
+            filter: `channel="${route.params.channel}"`,
+            expand: "author",
+        });
 
-    lastPage.value = resultList.totalPages;
-    messages.value.push(...resultList.items);
+        lastPage.value = resultList.totalPages;
+        messages.value.push(...resultList.items);
 
-    // sort messages by creation date ascending to show oldest messages at the top
-    messages.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+        // sort messages by creation date ascending to show oldest messages at the top
+        messages.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
+    } finally {
+        isLoading.value = false;
+    }
 }
 
 /**
@@ -102,6 +113,20 @@ async function loadMessages() {
  */
 onMounted(async () => {
     await loadMessages();
+
+    loadObserver.value = new IntersectionObserver((entries) => {
+        const [entry] = entries;
+        if (!entry?.isIntersecting) return;
+        if (currentPage.value >= lastPage.value) return;
+        if (isLoading.value) return;
+
+        currentPage.value += 1;
+        void loadMessages();
+    });
+
+    if (loadButton.value) {
+        loadObserver.value.observe(loadButton.value);
+    }
 
     // Listen for real-time updates to messages in the current channel.
     unsubscribeFunc.value = await pb.collection("messages").subscribe("*", receiveMessage, {
@@ -121,6 +146,11 @@ onMounted(async () => {
 onBeforeUnmount(() => {
     // Unsubscribe from real-time updates when the component is unmounted.
     unsubscribeFunc.value();
+
+    if (loadObserver.value && loadButton.value) {
+        loadObserver.value.unobserve(loadButton.value);
+    }
+    loadObserver.value?.disconnect();
 });
 </script>
 
