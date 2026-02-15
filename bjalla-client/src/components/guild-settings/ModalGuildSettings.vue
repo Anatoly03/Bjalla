@@ -1,0 +1,114 @@
+<template>
+    <div v-if="isActive" class="modal-background" @click.self="closeModal">
+        <div class="modal modal-guild-settings">
+            <div class="modal-sidebar">
+                <a @click="navigateTo('GuildSettingsGeneral')" class="modal-sidebar-item">General</a>
+            </div>
+            <div class="modal-content">
+                <ModalRouterView />
+            </div>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ModalRouterView, useModal } from "@vmrh/core";
+import { useRoute, useRouter } from "vue-router";
+import ModalGuildSettingsGeneral from "./ModalGuildSettingsGeneral.vue";
+
+const { close, isActive } = useModal("GuildSettings");
+const router = useRouter();
+const route = useRoute();
+
+/**
+ * Closes the modal when the background is clicked or when the update
+ * is successful.
+ */
+function closeModal() {
+    close();
+}
+
+/**
+ * Updates the user's name in PocketBase and closes the modal on success.
+ */
+async function navigateTo(name: string) {
+    try {
+        await router.push({
+            name,
+            params: route.params,
+            query: route.query,
+            hash: route.hash,
+        });
+    } catch (error) {
+        console.error("Navigation error:", error);
+    }
+}
+
+/**
+ * Expose child routes for global modal registration.
+ */
+defineOptions({
+    routes: [
+        { name: "GuildSettingsGeneral", path: "", component: ModalGuildSettingsGeneral },
+    ],
+});
+</script>
+
+<style lang="scss" scoped>
+@use "../../assets/theme.scss";
+
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal {
+    display: flex;
+    flex-direction: row;
+
+    position: absolute;
+    margin: auto;
+    width: 80%;
+    height: 80%;
+
+    background: var(--theme-bg-2, #f2e6d6);
+    backdrop-filter: blur(4px);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+    .modal-content {
+        flex: 1;
+        padding: 1rem;
+        overflow-y: auto;
+    }
+}
+
+.modal-sidebar {
+    width: 200px;
+    border-right: 1px solid #ccc;
+
+    .modal-sidebar-item {
+        display: block;
+        padding: 0.5rem;
+        color: inherit;
+        text-decoration: none;
+        cursor: pointer;
+
+        &.active {
+            background-color: var(--theme-bg-2, #e0c9b7);
+        }
+
+        &:hover {
+            background-color: var(--theme-bg-1, #f5f5f5);
+        }
+    }
+}
+</style>
