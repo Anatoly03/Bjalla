@@ -8,42 +8,11 @@ package api_test
 import (
 	"encoding/json"
 	"net/http"
-	"path/filepath"
-	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/pocketbase/pocketbase/tests"
 )
-
-// setupTestApp initializes a new TestApp instance.
-func setupTestApp(t testing.TB) *tests.TestApp {
-	_, filePath, _, _ := runtime.Caller(0)
-	dataDir := filepath.Clean(filepath.Join(filepath.Dir(filePath), "..", "pb_data"))
-
-	testApp, err := tests.NewTestApp(dataDir)
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return testApp
-}
-
-// getAuthToken is a helper function to retrieve an auth token for a given user in the specified collection.
-func getAuthToken(app *tests.TestApp, recordId string) string {
-	record, err := app.FindRecordById("users", recordId)
-	if err != nil {
-		app.Logger().Error("Failed to find auth record with id %q: %v", recordId, err)
-	}
-
-	token, err := record.NewAuthToken()
-	if err != nil {
-		app.Logger().Error("Failed to generate token for auth record with id %q: %v", recordId, err)
-	}
-
-	return token
-}
 
 // TestUsersCreate ensures everyone can create a new unique user record
 func TestUsersCreate(t *testing.T) {
