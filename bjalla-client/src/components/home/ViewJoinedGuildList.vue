@@ -49,8 +49,6 @@ async function openGuildProposal() {
  * Fetch the guilds the user is a member of on component mount.
  */
 onMounted(async () => {
-    console.log('Fetching Guilds');
-
     const resultList = await pb.collection('guild_members').getList(1, 50, {
         requestKey: 'guilds', // cache results
         filter: `user="${pb.authStore.record?.id}"`,

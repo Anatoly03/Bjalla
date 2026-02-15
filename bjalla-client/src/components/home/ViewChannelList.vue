@@ -1,7 +1,7 @@
 <template>
     <div class="view-channels">
-        <router-link :to="`/${route.params.guild}/${row.expand.channel.id}`" v-for="row in channels" :key="row.id" class="channel-item" :class="{ active: route.params.channel === row.expand.channel.id }">
-            {{ row.expand.channel.name }}
+        <router-link :to="`/${route.params.guild}/${channel.id}`" v-for="channel in channels" :key="channel.id" class="channel-item" :class="{ active: route.params.channel === channel.id }">
+            {{ channel.name }}
         </router-link>
         <div @click="openGuildSettings" class="channel-item view-guilds-create">
             <font-awesome-icon icon="fa-solid fa-gear" />
@@ -37,13 +37,12 @@ async function openGuildSettings() {
 onMounted(async () => {
     if (!route.params.guild) return;
 
-    const resultList = await pb.collection("guild_channels").getList(1, 50, {
+    const resultList = await pb.collection("channels").getList(1, 50, {
         requestKey: 'channels-' + route.params.guild, // cache results per guild
-        expand: "channel",
         filter: `guild="${route.params.guild}"`,
     });
 
-    console.log(resultList);
+    console.log('Fetched Channels', resultList.items);
 
     channels.value = resultList.items;
 });
