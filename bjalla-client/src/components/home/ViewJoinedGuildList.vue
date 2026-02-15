@@ -1,7 +1,13 @@
 <template>
     <div class="view-guilds">
         <router-link :to="`/${row.expand.guild.id}`" v-for="row in guilds" :key="row.id" class="view-guilds-item"  :class="{ active: route.params.guild === row.expand.guild.id }">
-            <font-awesome-icon icon="fa-regular fa-comment" />
+            <img
+                v-if="row.expand.guild.logo"
+                :src="pb.files.getURL(row.expand.guild, row.expand.guild.logo)"
+                alt="logo"
+                class="guild-logo"
+                />
+            <span v-else class="guild-capital">{{ row.expand.guild.name.charAt(0).toUpperCase() }}</span>
         </router-link>
     </div>
 </template>
@@ -53,6 +59,7 @@ onMounted(async () => {
         align-items: center;
         box-sizing: border-box;
         border-radius: 0.5rem;
+        text-decoration: none;
         
         width: 4rem;
         aspect-ratio: 1;
@@ -65,6 +72,18 @@ onMounted(async () => {
 
         &.active {
             background: var(--theme-bg-2, #ddd);
+        }
+
+        .guild-logo {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            overflow: hidden;
+
+            .logo-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
         }
     }
 }
