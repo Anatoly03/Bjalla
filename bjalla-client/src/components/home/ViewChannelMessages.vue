@@ -112,6 +112,7 @@ onBeforeUnmount(() => {
     flex-direction: column-reverse; // reverse to show newest messages at the bottom
     flex: 1;
     gap: 0.25em;
+    overflow: scroll;
 
     .message {
         display: flex;
