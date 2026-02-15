@@ -6,7 +6,7 @@
 </template>
 
 <script setup lang="ts">
-import ModalProfileSettings from "./ModalProfileSettings.vue";
+import ModalProfileSettings from "./settings/ModalProfileSettings.vue";
 import NotFound from "./NotFound.vue";
 import ViewAuth from "./ViewAuth.vue";
 import ViewHome from "./home/ViewHome.vue";
