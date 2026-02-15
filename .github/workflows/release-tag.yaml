@@ -1,0 +1,36 @@
+name: Release Tag
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  release-tag:
+    if: ${{ github.event.pull_request.merged && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'dev' && startsWith(github.event.pull_request.title, 'v') && !contains(github.event.pull_request.title, ' ') && !contains(github.event.pull_request.title, '/') }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout merge commit
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+
+    #   - name: Configure Git
+    #     run: |
+    #       git config user.name "GitHub Actions Bot"
+    #       git config user.email "actions@github.com"
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.pull_request.title }}
+          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+          prerelease: true
+          name: ${{ github.event.pull_request.title }}
+          body: |
+            This is the pre-release version [`${{ github.event.pull_request.title }}`](${{ github.event.pull_request.html_url }}) of Bjalla.
+
+            _Note: This tag is automatically created._
