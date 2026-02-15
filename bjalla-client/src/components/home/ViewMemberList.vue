@@ -1,6 +1,6 @@
 <template>
     <div class="view-members">
-        <span v-for="row in members" :key="row.id" class="view-member-item">
+        <span v-for="row in members" :key="row.id" class="view-member-item" @click="openMemberInfo($event, row)">
             <span class="avatar">
                 <img
                     v-if="row.expand.user.avatar"
@@ -17,9 +17,12 @@
 </template>
 
 <script setup lang="ts">
+import { useModalRoute } from "@vmrh/core";
 import pb from "../../service/pocketbase";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
+
+const { openModal } = useModalRoute();
 
 /**
  * Route instance to get the current guild and channel from the URL.
@@ -30,6 +33,25 @@ const route = useRoute();
  * Members of the current guild.
  */
 const members = ref<any[]>([]);
+
+/**
+ * Opens the member info modal when a member is clicked.
+ */
+async function openMemberInfo(event: MouseEvent, member: any) {
+    const target = event.currentTarget as HTMLElement | null;
+    const rect = target?.getBoundingClientRect();
+    const position = rect
+        ? { x: rect.left + 22, y: rect.top + rect.height / 2 }
+        : { x: event.clientX, y: event.clientY };
+    
+    await openModal("ViewMemberProfile", {
+        data: {
+            user_id: member.expand.user.id,
+            guild_id: route.params.guild,
+            position,
+        },
+    });
+}
 
 /**
  * Fetch the members of the current guild on component mount.

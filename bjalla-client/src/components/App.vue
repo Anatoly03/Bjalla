@@ -16,6 +16,7 @@ import ModalCreateGuild from "./create-guild/ModalCreateGuild.vue";
 import ModalGuildSettings from "./guild-settings/ModalGuildSettings.vue";
 import ModalGuildSettingsGeneral from "./guild-settings/ModalGuildSettingsGeneral.vue";
 import ModalGuildSettingsRoles from "./guild-settings/ModalGuildSettingsRoles.vue";
+import ModalViewMemberProfile from "./view-member-profile/ModalViewMemberProfile.vue";
 
 defineOptions({
     routes: [
@@ -52,6 +53,12 @@ defineOptions({
                 { name: "GuildSettingsRoles", path: "roles", component: ModalGuildSettingsRoles },
             ],
         },
+        {
+            path: "view-member-profile",
+            name: "ViewMemberProfile",
+            component: ModalViewMemberProfile,
+            meta: { modal: true, direct: false },
+        }
     ]
 });
 </script>
