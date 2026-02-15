@@ -2,31 +2,36 @@
     <div class="modal-view-roles">
         <h2>Roles</h2>
         <table class="role-matrix">
-            <tr class="permissions">
-                <td class="role-name-col"></td>
-                <td class="permission-col">Admin</td>
-                <td class="permission-col">Default</td>
-                <td class="fill-col"></td>
-                <td class="delete-col"></td>
-            </tr>
-            <tr v-for="role in roles" :key="role.id" class="role">
-                <th class="role-name-col">{{ role.name }}</th>
-                <td class="permission-col"><input type="checkbox" :checked="role.is_admin" disabled /></td>
-                <td class="permission-col"><input type="checkbox" :checked="role.is_default" disabled /></td>
-                <td class="fill-col"></td>
-                <td class="delete-col">
-                    <button @click="deleteRole(role.id)" :disabled="!canEditRoles">
-                        <font-awesome-icon icon="fa-solid fa-trash-can" />
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" :disabled="!canEditRoles" /></td>
-                <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" :disabled="!canEditRoles" /></td>
-                <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" :disabled="!canEditRoles" /></td>
-                <td class="fill-col"><button @click="createRole" :disabled="!canEditRoles">Create Role</button></td>
-                <td class="delete-col"></td>
-            </tr>
+            <thead>
+                <tr class="permissions">
+                    <td class="role-name-col"></td>
+                    <td class="permission-col">Admin</td>
+                    <td class="permission-col">Default</td>
+                    <td class="fill-col"></td>
+                    <td class="delete-col"></td>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr v-for="role in roles" :key="role.id" class="role">
+                    <th class="role-name-col">{{ role.name }}</th>
+                    <td class="permission-col"><input type="checkbox" :checked="role.is_admin" disabled /></td>
+                    <td class="permission-col"><input type="checkbox" :checked="role.is_default" disabled /></td>
+                    <td class="fill-col"></td>
+                    <td class="delete-col">
+                        <button @click="deleteRole(role.id)" :disabled="!canEditRoles">
+                            <font-awesome-icon icon="fa-solid fa-trash-can" />
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><input type="text" placeholder="New role name" v-model="newRoleName" @keypress.enter="createRole" :disabled="!canEditRoles" /></td>
+                    <td class="permission-col"><input type="checkbox" v-model="newRoleIsAdmin" :disabled="!canEditRoles" /></td>
+                    <td class="permission-col"><input type="checkbox" v-model="newRoleIsDefault" :disabled="!canEditRoles" /></td>
+                    <td class="fill-col"><button @click="createRole" :disabled="!canEditRoles">Create Role</button></td>
+                    <td class="delete-col"></td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </template>
@@ -79,7 +84,7 @@ async function createRole() {
  * Deletes the role with the given ID and removes it from the list.
  */
 async function deleteRole(roleId: string) {
-    const result = await pb.collection("guild_roles").delete(roleId);
+    await pb.collection("guild_roles").delete(roleId);
     roles.value = roles.value.filter(role => role.id !== roleId);
 }
 

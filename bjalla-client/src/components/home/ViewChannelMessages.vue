@@ -4,7 +4,7 @@
             <strong>{{ message.expand.author?.name ?? '???' }}</strong>
             <span>:</span>
             <span class="fill">{{ message.content }}</span>
-            <button v-if="canDeleteMessages || message.expand.author.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
+            <button v-if="canDeleteMessages || message.expand.author?.id === pb.authStore.record?.id" @click="deleteMessage(message.id)">Delete</button>
         </div>
         <div class="load-early-messages">
             <button
@@ -100,7 +100,7 @@ async function loadMessages() {
         lastPage.value = resultList.totalPages;
         messages.value.push(...resultList.items);
 
-        // sort messages by creation date ascending to show oldest messages at the top
+        // sort messages by creation date descending
         messages.value.sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
     } finally {
         isLoading.value = false;
