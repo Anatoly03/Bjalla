@@ -18,10 +18,15 @@ func HandleMessage(e *core.RecordEvent) error {
 		return e.Next()
 	}
 
+	// send incoming message
+	if err := e.Next(); err != nil {
+		return err
+	}
+
 	// fetch `messages` collection
 	collection, err := e.App.FindCollectionByNameOrId("messages")
 	if err != nil {
-		return e.Next()
+		return err
 	}
 
 	// find the command
@@ -41,21 +46,21 @@ func HandleMessage(e *core.RecordEvent) error {
 		reply.Set("channel", e.Record.Get("channel"))
 
 		if err := e.App.Save(reply); err != nil {
-			return e.Next()
+			return err
 		}
 	// flood N messages into the channel when the command is "flood N"
 	case "flood":
 		if spaceIdx == len(content_str) {
-			return e.Next()
+			return nil
 		}
 
 		n := 0
 		if _, err := fmt.Sscanf(content_str[spaceIdx+1:], "%d", &n); err != nil {
-			return e.Next()
+			return nil
 		}
 
 		if err := e.Next(); err != nil {
-			return err
+			return nil
 		}
 
 		for i := 0; i < n; i++ {
@@ -65,7 +70,7 @@ func HandleMessage(e *core.RecordEvent) error {
 			reply.Set("channel", e.Record.Get("channel"))
 
 			if err := e.App.Save(reply); err != nil {
-				return e.Next()
+				return err
 			}
 
 			// sleep for 100ms to avoid flooding too fast
@@ -73,9 +78,7 @@ func HandleMessage(e *core.RecordEvent) error {
 		}
 
 		return nil
-	default:
-		return e.Next()
 	}
 	
-	return e.Next()
+	return nil
 }
