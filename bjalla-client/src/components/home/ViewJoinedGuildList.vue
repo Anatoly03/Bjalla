@@ -44,7 +44,6 @@ onMounted(async () => {
     padding-top: 0.5em;
     margin-left: 0.5em;
     padding-right: 0.5em;
-    border-right: 1px solid black;
     gap: 0.5rem;
     overflow-y: scroll;
 

@@ -2,6 +2,7 @@
     <div class="view-sidebar">
         <div class="view-sidebar-content">
             <ViewJoinedGuildList />
+            <div class="separator"></div>
             <ViewChannelList :key="$route.params.guild" />
         </div>
         <ViewAuthCard />
@@ -30,6 +31,12 @@ import ViewJoinedGuildList from "./ViewJoinedGuildList.vue";
         flex-direction: row;
         flex: 1;
         overflow: hidden;
+
+        .separator {
+            width: 1px;
+            background: black;
+            height: calc(100% - 1rem);
+        }
     }
 }
 </style>
