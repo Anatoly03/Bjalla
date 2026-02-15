@@ -1,12 +1,14 @@
 <template>
-    <div v-if="isActive" class="view-member-profile-modal-background" :style="modalStyle" ref="modalRef" tabindex="-1" @focusout="handleFocusOut">
-        <div class="card view-member-profile">
-            <div class="profile-banner" :class="{ empty: !user?.avatar }">
-                <img v-if="user?.avatar" :src="avatarUrl" alt="avatar" class="user-avatar" />
-                <span v-else class="user-avatar-placeholder">{{ user?.name?.[0] ?? "?" }}</span>
-            </div>
-            <div class="profile-name">
-                {{ user?.name ?? "Unknown User" }}
+    <div v-if="isActive" class="view-member-profile-modal-overlay" @click.self="closeModal">
+        <div class="view-member-profile-modal-background" :style="modalStyle">
+            <div class="card view-member-profile">
+                <div class="profile-banner" :class="{ empty: !user?.avatar }">
+                    <img v-if="user?.avatar" :src="avatarUrl" alt="avatar" class="user-avatar" />
+                    <span v-else class="user-avatar-placeholder">{{ user?.name?.[0] ?? "?" }}</span>
+                </div>
+                <div class="profile-name">
+                    {{ user?.name ?? "Unknown User" }}
+                </div>
             </div>
         </div>
     </div>
@@ -15,10 +17,9 @@
 <script setup lang="ts">
 import pb from "../../service/pocketbase";
 import { useModal } from "@vmrh/core";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 const { close, isActive } = useModal("ViewMemberProfile");
-const modalRef = ref<HTMLDivElement | null>(null);
 
 /**
  * Gets the user ID and guild ID from the query parameters, as well as
@@ -70,19 +71,6 @@ function closeModal() {
     close();
 }
 
-function handleFocusOut(event: FocusEvent) {
-    const nextTarget = event.relatedTarget as Node | null;
-    if (!nextTarget || !modalRef.value?.contains(nextTarget)) {
-        closeModal();
-    }
-}
-
-watch(isActive, async (active) => {
-    if (!active) return;
-    await nextTick();
-    modalRef.value?.focus();
-});
-
 watch(
     () => props.user_id,
     async (userId) => {
@@ -100,13 +88,19 @@ watch(
             user.value = null;
         }
     },
-    { immediate: true }
+    { immediate: true },
 );
 </script>
 
 <style lang="scss" scoped>
 @use "../../assets/theme.scss";
 @use "../../assets/ui.scss";
+
+.view-member-profile-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+}
 
 .view-member-profile-modal-background {
     position: fixed;
@@ -145,7 +139,8 @@ watch(
             width: 64px;
             height: 64px;
 
-            &.empty, &:hover {
+            &.empty,
+            &:hover {
                 background: var(--theme-bg-1, #f2e6d6);
             }
 
