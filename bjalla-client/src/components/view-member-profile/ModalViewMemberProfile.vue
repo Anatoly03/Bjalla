@@ -1,14 +1,18 @@
 <template>
     <div v-if="isActive" class="view-member-profile-modal-background" :style="modalStyle" ref="modalRef" tabindex="-1" @focusout="handleFocusOut">
         <div class="card view-member-profile">
-            Card
+            <div class="profile-banner" :class="{'empty':user?.avatar}">
+                <img :src="pb.files.getURL(user, user.avatar)" alt="avatar" class="user-avatar" v-if="user?.avatar" />
+                <span v-else class="user-avatar-placeholder">{{ user?.name?.[0] ?? "?" }}</span>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+import pb from "../../service/pocketbase";
 import { useModal } from "@vmrh/core";
-import { computed, nextTick, ref, watch } from "vue";
+import { computed, nextTick, onMounted, ref, watch } from "vue";
 
 const { close, isActive } = useModal("ViewMemberProfile");
 const modalRef = ref<HTMLDivElement | null>(null);
@@ -22,6 +26,11 @@ const props = defineProps<{
     guild_id: string;
     position?: { x: number; y: number };
 }>();
+
+/**
+ * User Information
+ */
+const user = ref<any>(null);
 
 const fallbackPosition = computed(() => {
     if (typeof window === "undefined") {
@@ -63,6 +72,16 @@ watch(isActive, async (active) => {
     await nextTick();
     modalRef.value?.focus();
 });
+
+onMounted(async () => {
+    try {
+        user.value = await pb.collection("users").getOne(props.user_id, {
+            requestKey: `user-profile-${props.user_id}`, // cache user data
+        });
+    } catch (error) {
+        console.error("Failed to fetch user data:", error);
+    }
+});
 </script>
 
 <style lang="scss" scoped>
@@ -95,5 +114,36 @@ watch(isActive, async (active) => {
     height: 400px;
 
     box-shadow: 0 10px 22px rgba(0, 0, 0, 0.3);
+
+    .profile-banner {
+        display: flex;
+        justify-content: center;
+        padding: auto;
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+
+            &.empty, &:hover {
+                background: var(--theme-bg-1, #f2e6d6);
+            }
+
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            .upload-hint {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                color: var(--theme-text-secondary, #888);
+            }
+        }
+    }
 }
 </style>

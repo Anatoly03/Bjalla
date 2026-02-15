@@ -22,7 +22,7 @@ import pb from "../../service/pocketbase";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
-const { openModal } = useModalRoute();
+const { openModal, closeModal } = useModalRoute();
 
 /**
  * Route instance to get the current guild and channel from the URL.
@@ -44,6 +44,12 @@ async function openMemberInfo(event: MouseEvent, member: any) {
         ? { x: rect.left + 22, y: rect.top + rect.height / 2 }
         : { x: event.clientX, y: event.clientY };
     
+    try {
+        await closeModal("ViewMemberProfile");
+    } catch {
+        // Ignore if modal was not open.
+    }
+
     await openModal("ViewMemberProfile", {
         data: {
             user_id: member.expand.user.id,
